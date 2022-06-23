@@ -43,6 +43,16 @@ app.post("/create", (req, res) => {
             }
           }
       )
+      db.query(
+        'SELECT song FROM songs INNER JOIN artist ON song.songs = artist.artist_name ',
+        (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            res.send("Values Inserted");
+          }
+        }
+      )
 })
 
 app.get("/songs", (req, res) => {
