@@ -20,7 +20,7 @@ git clone https://github.com/varshathgupta/HiringChallenge.git
 ```
 
 ```sh
-cd  server
+cd   server
 ```
 
 ```sh
