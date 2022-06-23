@@ -1,0 +1,31 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.navbarr{
+    background: grey;
+    width : 100%;
+    height: 70px;
+   
+}
+.navbarr-inner{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    padding: 10px 50px;
+}
+.home{
+    background: #fff;
+    padding: 10px;
+}
+.hometxt{
+    color:grey;
+    font-weight: bold;
+}
+ input{
+    width:250px;
+    border-radius: 20px;
+    padding: 5px;
+    outline: none;
+}
