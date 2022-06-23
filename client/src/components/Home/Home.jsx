@@ -69,9 +69,12 @@ function home() {
         },
       ]
       const [addSong, setAddSong] = useState(false);
-
+      const [addArtist, setAddArtist] = useState(false);
       const handleClose = () => setAddSong(false);
       const handleShow = () => setAddSong(true);
+      const handleCloseArtist =()=>setAddArtist(false);
+      const handleShowArtist =()=>setAddArtist(true);
+
   
   return (
   
@@ -121,7 +124,7 @@ function home() {
                       <option value="2">Aniruth</option>
                       <option value="3">Devisri Prasad</option>
                   </Form.Select>
-                  <Button className="mt-2" variant="secondary">+ Add Artist</Button>
+                  <Button className="mt-2" variant="secondary" onClick={handleShowArtist}>+ Add Artist</Button>
                   </Form.Group>
                 </Form>
               </Modal.Body>
@@ -134,6 +137,49 @@ function home() {
                 </Button>
               </Modal.Footer>
             </Modal>
+            
+            <Modal show={addArtist} onHide={handleCloseArtist}>
+              <Modal.Header closeButton>
+                <Modal.Title>Add Artist</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Form>
+                  <Form.Group className="mb-3" >
+                    <Form.Label>Artist Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter artist name"
+                      
+                    />
+                  </Form.Group>
+                  <Form.Group
+                    className="mb-3"
+                  >
+                    <Form.Label>Date of Birth</Form.Label>
+                    <Form.Control
+                      type="date"
+                      placeholder="Enter date of birth" 
+                    />
+                  </Form.Group>
+                  <Form.Group
+                    className="mb-3"
+                    
+                  >
+                    <Form.Label>Bio</Form.Label>
+                    <Form.Control as="textarea" rows={7} />
+                  </Form.Group>
+                </Form>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={handleCloseArtist}>
+                  Close
+                </Button>
+                <Button variant="primary" onClick={handleClose}>
+                  Save 
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
             <Table striped bordered hover size="sm" >
               <thead >
                 {
