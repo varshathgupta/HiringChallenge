@@ -1,79 +1,87 @@
 import React,{useState} from 'react'
 import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table'
-import ar from '../../images/arRahuman.jpeg'
-import ani from '../../images/aniruth.jpg'
-import dsp from '../../images/dsp.jpg'
 import { Rating } from 'react-simple-star-rating'
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Axios from 'axios'
 
 function home() {
+  const[song,setSong]= useState("")
+  const[rating,setRating]= useState(0)
+  const[dor,setDoR]=useState(new Date())
+  const[dob,setDoB]=useState(new Date())
+  const[artistName,setArtistName]= useState("")
+  const[selectArtist,setSelectArtist]=useState("")
+  const[artwork,setArtWork]= useState(null)
+  const[bio,setBio]=useState("")
+  const [addSong, setAddSong] = useState(false);
+  const [addArtist, setAddArtist] = useState(false);
+  const handleClose = () => setAddSong(false);
+  const handleShow = () => setAddSong(true);
+  const handleCloseArtist =()=>setAddArtist(false);
+  const handleShowArtist =()=>setAddArtist(true);
 
-  const songsHeader=[
-    "Artwork","Song","Date of Release","Artists", "Rating"
-]
-  const songsBio =[
-          {
-          
-          "artwork":ar,
-          "song":"Munbe va",
-          "dor":"July 21,2009",
-          "artists":"Ar Rahuman",
-          "rating": 5
+  const [songList, setSongList] = useState([]);
+  const [artistList,setArtistList]= useState([]);
+                                                                               // Api for adding data to database
+  const addSongList = () => {
+    Axios.post("http://localhost:3001/create", {
+      song: song,
+      dor: dor,
+      artistName: artistName,
+      artwork: artwork,
+      selectArtist:selectArtist
+      
+    }).then(() => {
+      setSongList([
+        ...songList,
+        {
+          song: song,
+          dor: dor,
+          artistName: artistName,
+          artwork: artwork,
+          selectArtist:selectArtist
+        },
+      ]);
+    });
+  };
+  const addArtistList =()=>{
+    Axios.post("http://localhost:3001/create", {
+     
+      artistName: artistName,
+      dob:dob,
+      bio:bio
+      
+    }).then(() => {
+      setArtistList([
+        ...artistList,
+        {
+          artistName: artistName,
+      dob:dob,
+      bio:bio
+        },
+      ]);
+    });
+  }
+                                                                // Api get request
+  const getSongs = () => {
+    Axios.get("http://localhost:3001/songs").then((response) => {
+      setSongList(response.data);
+    });
+  };
+  const getArtist = () => {
+    Axios.get("http://localhost:3001/artists").then((response) => {
+      setArtistList(response.data);
+    });
+  };
 
-      },
-      {
-        
-          "artwork":ani,
-          "song":"Once upon a time",
-          "dor":"May 20,2022",
-          "artists":"Aniruth",
-          "rating":3
-          
-          },
-      {
-              
-              "artwork": dsp,
-              "song":"Bullet Song",
-              "dor":"May 10 ,2022",
-              "artists":"Devisri prasad",
-              "rating":4
-              
-              },
-              {
-                "artwork":ar,
-                "song": "Hosanna",
-                "dor":"June 15,2009",
-                "artists":"Ar Rahuman",
-                "rating":5
-              }
-      ]
+   
+    
+      
+      const songsHeader=["Artwork","Song","Date of Release","Artists", "Rating" ]     //Table Headings
       const artistHead =["ArtistName","Date of Birth","Songs"]
-      const artishData =[
-        {
-          "artistName": "Ar Rahuman",
-          "dob":" January 6, 1967",
-          "songs":"Munbe va,Hosanna"
-        },
-        {
-          "artistName": "Aniruth",
-          "dob":" October 16, 1990",
-          "songs":"Once upon a time"
-        },
-        {
-          "artistName": "Devisri prasad",
-          "dob":" August 2, 1979",
-          "songs":"Bullet Song"
-        },
-      ]
-      const [addSong, setAddSong] = useState(false);
-      const [addArtist, setAddArtist] = useState(false);
-      const handleClose = () => setAddSong(false);
-      const handleShow = () => setAddSong(true);
-      const handleCloseArtist =()=>setAddArtist(false);
-      const handleShowArtist =()=>setAddArtist(true);
 
   
   return (
@@ -83,6 +91,7 @@ function home() {
             <h1 className="font-weight-bold text-secondary">Top 10 Songs</h1>
             <button className="btn btn-secondary" onClick={handleShow}>+ Add Song</button>
             </div>
+                                                                              {/* Add Songs Modal beignins */}
             <Modal show={addSong} onHide={handleClose}>
               <Modal.Header closeButton>
                 <Modal.Title>Add a new song</Modal.Title>
@@ -94,6 +103,7 @@ function home() {
                     <Form.Control
                       type="text"
                       placeholder="Enter Song name" 
+                      onChange={(e)=>{setSong(e.target.value)}}
                     />
                   </Form.Group>
                   <Form.Group
@@ -102,7 +112,8 @@ function home() {
                     <Form.Label>Date of Release</Form.Label>
                     <Form.Control
                       type="date"
-                      placeholder="Enter date of release" 
+                      placeholder="Enter date of release"
+                      onChange={(e)=>{setDoR(e.target.value)}} 
                     />
                   </Form.Group>
                   <Form.Group
@@ -112,13 +123,16 @@ function home() {
                     <Form.Control
                       type="file"
                       placeholder="upload Art Work" 
+                      onChange={(e)=>{setArtWork(e.target.files[0])}}
                     />
                   </Form.Group>
                   <Form.Group
                     className="mb-3"   
                   >
                     <Form.Label>Artist</Form.Label>
-                    <Form.Select aria-label="Default select example">
+                    <Form.Select aria-label="Default select example"
+                     onChange={(e)=>{setSelectArtist(e.target.value)}}
+                    >
                       <option>Search</option>
                       <option value="1">Ar Rahuman</option>
                       <option value="2">Aniruth</option>
@@ -132,13 +146,13 @@ function home() {
                 <Button variant="secondary" onClick={handleClose}>
                   Close
                 </Button>
-                <Button variant="primary" onClick={handleClose}>
+                <Button variant="primary" onClick={addSongList}>
                   Save 
                 </Button>
               </Modal.Footer>
             </Modal>
-            
-            <Modal show={addArtist} onHide={handleCloseArtist}>
+
+            <Modal show={addArtist} onHide={handleCloseArtist}>                 {/* Add artist Modal beignins */}
               <Modal.Header closeButton>
                 <Modal.Title>Add Artist</Modal.Title>
               </Modal.Header>
@@ -149,6 +163,7 @@ function home() {
                     <Form.Control
                       type="text"
                       placeholder="Enter artist name"
+                      onChange={(e)=>{setArtistName(e.target.value)}}
                       
                     />
                   </Form.Group>
@@ -158,7 +173,8 @@ function home() {
                     <Form.Label>Date of Birth</Form.Label>
                     <Form.Control
                       type="date"
-                      placeholder="Enter date of birth" 
+                      placeholder="Enter date of birth"
+                      onChange={(e)=>{setDoB(e.target.value)}}  
                     />
                   </Form.Group>
                   <Form.Group
@@ -166,7 +182,7 @@ function home() {
                     
                   >
                     <Form.Label>Bio</Form.Label>
-                    <Form.Control as="textarea" rows={7} />
+                    <Form.Control as="textarea" rows={7} onChange={(e)=>{setBio(e.target.value)}} />
                   </Form.Group>
                 </Form>
               </Modal.Body>
@@ -174,13 +190,15 @@ function home() {
                 <Button variant="secondary" onClick={handleCloseArtist}>
                   Close
                 </Button>
-                <Button variant="primary" onClick={handleClose}>
+                <Button variant="primary" onClick={addArtistList}>
                   Save 
                 </Button>
               </Modal.Footer>
             </Modal>
 
-            <Table striped bordered hover size="sm" >
+                                                                                        {/* Data displaying on song Table*/}
+
+            <Table striped bordered hover size="sm" >                        
               <thead >
                 {
                   songsHeader.map((head)=>
@@ -190,19 +208,23 @@ function home() {
                 } 
               </thead>
               <tbody>            
-                  {songsBio.map((columns,index)=>(
+                  {songList.map((columns,index)=>(
                     <tr  key={index}>
                       <td className="px-5 py-2"><img style={{width:"100px", height:"100px"}} src={columns.artwork}/></td>
                       <td className="px-5 py-5">{columns.song}</td>
                       <td className="px-5 py-5">{columns.dor}</td>
                       <td className="px-5 py-5">{columns.artists}</td>
-                      <td className="px-5 py-5">{<Rating  ratingValue={columns.rating}  />}</td>
+                      <td className="px-5 py-5">{<Rating  ratingValue={columns.rating} size={23}   onChange={(e)=>{setRating(e.target.value)}}/>}</td>
 
                   </ tr>
                   ))}              
               </tbody>
           </Table>
+
           <h1 className="font-weight-bold text-secondary mt-5 mb-5">Top 10 Artists</h1>
+            
+                                                                                           {/* Data displaying on artist Table*/}
+
           <Table striped bordered   >
             <thead>
               {artistHead.map((arthead)=>(
@@ -210,7 +232,7 @@ function home() {
               ))}
             </thead>
             <tbody>
-              {artishData.map((artistdetail,index)=>(
+              {artistList.map((artistdetail,index)=>(
                 <tr key={index}>
                   <td className="px-5 py-5">{artistdetail.artistName}</td>
                   <td className="px-5 py-5">{artistdetail.dob}</td>
